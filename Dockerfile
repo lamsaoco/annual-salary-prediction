@@ -16,10 +16,11 @@ COPY "pyproject.toml" "uv.lock" ".python-version" ./
 # Install dependencies exactly as locked in uv.lock, without updating them
 RUN uv sync --locked
 
-# Copy application code and model data into the container
-COPY "predict.py" "ml_xgboost.bin" ./
+# Copy application source code and model artifact into the container
+COPY "src/predict.py" ./src/predict.py
+COPY "models/ml_xgboost.bin" ./models/ml_xgboost.bin
 
 # Expose TCP port 9696 so it can be accessed from outside the container
 EXPOSE 9696
 
-ENTRYPOINT ["uvicorn", "predict:app", "--host", "0.0.0.0", "--port", "9696"]
+ENTRYPOINT ["uvicorn", "src.predict:app", "--host", "0.0.0.0", "--port", "9696"]
